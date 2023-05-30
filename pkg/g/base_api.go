@@ -7,12 +7,12 @@ type A struct {
 	Output interface{}
 }
 
-func Apis(apis ...A) []A {
+func Apis(apis ...*A) []*A {
 	return apis
 }
 
-func Api(name string, input interface{}, output interface{}) A {
-	return A{
+func Api(name string, input interface{}, output interface{}) *A {
+	return &A{
 		Name:   name,
 		Input:  input,
 		Output: output,

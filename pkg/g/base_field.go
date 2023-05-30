@@ -1,5 +1,7 @@
 package g
 
+import "fmt"
+
 const (
 	Int      = "int64"
 	Str      = "string"
@@ -18,22 +20,6 @@ func WithBaseFields(fields ...F) []F {
 	return Fields(append(fields, BaseFields...)...)
 }
 
-func Json(name string) string {
-	return "json:" + name
-}
-
-func OmitJson(name string) string {
-	return "json:" + name + ",omitempty"
-}
-
-func Uni(name string) string {
-	return "uni:" + name
-}
-
-func Key(name string) string {
-	return "key:" + name
-}
-
 func Fields(fields ...F) []F {
 	return fields
 }
@@ -43,8 +29,10 @@ type F struct {
 	Type     string
 	Json     string
 	UniKey   string
+	Form     string
 	Key      string
 	Desc     string
+	ApiOnly  bool
 	Optional bool
 }
 
@@ -53,4 +41,9 @@ func Field(name string, t string, tags ...string) F {
 		Name: name,
 		Type: t,
 	}
+}
+
+func (f F) ToMongo() string {
+	mongoTag := fmt.Sprintf(`bson:"%s" json:"%s"`, f.Json, f.Json)
+	return fmt.Sprintf("%s %s `%s`", f.Name, f.Type, mongoTag)
 }

@@ -22,4 +22,7 @@ var (
 	UserAlreadyExists = New(2003, "user aleady exists: ")
 	UserNotExists     = New(2004, "user not exists: ")
 	InvalidPassword   = New(2005, "invalidPassword: ")
+
+	AlreadyExists = New(3001, "already exists: ")
+	NotExists     = New(3002, "not exists: ")
 )

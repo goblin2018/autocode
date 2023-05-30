@@ -1,6 +1,6 @@
 package api
 
-import "auto/pkg/generator/g"
+import "auto/pkg/g"
 
 var Schemas []g.Sc
 var BaseDir = "app"
@@ -10,5 +10,8 @@ func Add(s ...g.Sc) {
 }
 
 func init() {
-	Add(userSchema)
+	Add(
+		userSchema,
+		houseSchema,
+	)
 }

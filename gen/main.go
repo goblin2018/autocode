@@ -2,20 +2,21 @@ package main
 
 import (
 	"auto/api"
-	"fmt"
+	"auto/app/config"
+
+	"auto/pkg/g"
+	"auto/pkg/log"
 )
 
 func main() {
-	scs := api.Schemas
-	baseDir := api.BaseDir
-	fmt.Println(baseDir)
+	c := config.New()
+	log.Init(c.Mode, c.LogLevel)
 
-	for _, sc := range scs {
-		for _, s := range sc.Structs {
-			println(s)
-		}
-		for _, g := range sc.Groups {
-			println(g)
-		}
+	schemas := api.Schemas
+	baseDir := api.BaseDir
+
+	for _, schema := range schemas {
+		g.GenTypes(baseDir, schema.Name, schema.Structs)
+		g.GenModels(baseDir, schema.Name, schema.Model)
 	}
 }
