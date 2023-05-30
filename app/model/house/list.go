@@ -1,4 +1,4 @@
-package {{.package}}
+package house
 
 import (
 	"context"
@@ -6,20 +6,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-
 // 列表
-func (m *Model) {{.funcName}}(ctx context.Context, req *{{.reqName}}) (items []*{{.StructName}}, err error) {
+func (m *Model) List(ctx context.Context, req *ListHouseReq) (items []*House, err error) {
 	// Define the find options
 	opt := options.Find()
-	opt.SetSort(bson.D{{"{{"}}Key: "updateAt", Value: -1{{"}}"}})
+	opt.SetSort(bson.D{{Key: "updateAt", Value: -1}})
 
-	{{if .hasPage}}
 	// 如果不是读取全部数据，就分页
 	if req.Size != 0 {
-	  opt.SetSkip((req.Page - 1) * req.Size)
-    opt.SetLimit(req.Size)
-  }
-	{{end}}
+		opt.SetSkip((req.Page - 1) * req.Size)
+		opt.SetLimit(req.Size)
+	}
 
 	// Execute the find operation
 	cursor, err := m.coll.Find(ctx, m.genFilter(req), opt)
@@ -36,14 +33,15 @@ func (m *Model) {{.funcName}}(ctx context.Context, req *{{.reqName}}) (items []*
 	return
 }
 
-
-func (m *Model) Count(ctx context.Context, req *{{.reqName}}) (int64, error) {
+func (m *Model) Count(ctx context.Context, req *ListHouseReq) (int64, error) {
 	return m.coll.CountDocuments(ctx, m.genFilter(req))
 }
 
-
-func (m *Model) genFilter(req *{{.reqName}}) (filter bson.M) {
+func (m *Model) genFilter(req *ListHouseReq) (filter bson.M) {
 	filter = bson.M{}
-	{{.filter}}
+	if req.OrgId != "" {
+		filter["orgId"] = req.OrgId
+	}
+
 	return
 }

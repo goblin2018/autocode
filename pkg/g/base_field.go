@@ -1,6 +1,9 @@
 package g
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 const (
 	Int      = "int64"
@@ -46,4 +49,27 @@ func Field(name string, t string, tags ...string) F {
 func (f F) ToMongo() string {
 	mongoTag := fmt.Sprintf(`bson:"%s" json:"%s"`, f.Json, f.Json)
 	return fmt.Sprintf("%s %s `%s`", f.Name, f.Type, mongoTag)
+}
+
+func (f F) ToJson() string {
+	tag := f.Json
+	if tag == "" {
+		tag = f.Form
+	}
+	jsonTag := fmt.Sprintf(`json:"%s"`, tag)
+	return fmt.Sprintf("%s %s `%s`", f.Name, f.Type, jsonTag)
+}
+
+func (f F) ToJsonWithoutOmit() string {
+	jsonTag := fmt.Sprintf(`json:"%s"`, f.GetTagWithoutOmit())
+	return fmt.Sprintf("%s %s `%s`", f.Name, f.Type, jsonTag)
+}
+
+func (f F) GetTagWithoutOmit() string {
+	tag := f.Json
+	if tag == "" {
+		tag = f.Form
+	}
+
+	return strings.TrimSuffix(tag, ",omitempty")
 }

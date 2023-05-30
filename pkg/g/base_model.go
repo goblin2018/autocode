@@ -33,7 +33,9 @@ func Model(db string, structs []S, mfs []*MF) *M {
 	}
 }
 
+// model 函数
 type MF struct {
+	Type   string
 	Name   string
 	Input  S
 	Output S
@@ -43,8 +45,9 @@ func ModelFuncs(mfs ...*MF) []*MF {
 	return mfs
 }
 
-func ModelFunc(name string, input S, output S) *MF {
+func ModelFunc(name string, t string, input S, output S) *MF {
 	return &MF{
+		Type:   t,
 		Name:   name,
 		Input:  input,
 		Output: output,

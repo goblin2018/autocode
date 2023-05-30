@@ -46,10 +46,9 @@ var houseSchema = g.Schema(
 
 	g.Model(
 		"mongo",
-		g.Ss(House{}),
+		g.Ss(House{}, ListHouseReq{}),
 		g.ModelFuncs(
-			g.ModelFunc("get", User{}, User{}),
-			g.ModelFunc("update", User{}, User{}),
+			g.ModelFunc("List", "list", ListHouseReq{}, ListHouseResp{}),
 		),
 	),
 )

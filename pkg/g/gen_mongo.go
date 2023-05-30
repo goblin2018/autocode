@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"fmt"
 	"path"
+	"strings"
 )
 
 //go:embed tpl/mongo/base.tpl
@@ -13,9 +14,13 @@ var mongoBase string
 //go:embed tpl/mongo/model.tpl
 var mongoModel string
 
+//go:embed tpl/mongo/list.tpl
+var mongoListFunc string
+
 func GenMongo(baseDir string, name string, model *M) {
 	genBase(baseDir, name, model)
-	genModel(baseDir, name, model)
+	r, _ := genModel(baseDir, name, model)
+	genFuncs(baseDir, name, r["StructName"].(string), model)
 }
 
 // genBase
@@ -38,20 +43,81 @@ func genBase(baseDir string, name string, model *M) {
 	}
 }
 
-func genModel(baseDir, name string, model *M) (err error) {
+func genModel(baseDir, name string, model *M) (r map[string]interface{}, err error) {
 	file := NewFile(path.Join(baseDir, modelDir, name, "model.go"))
 
-	vs, err := parseMongoFuncs(name, model)
+	r, err = parseMongoModel(name, model)
 	if err != nil {
 		return
 	}
 
-	t := NewTemplate("mongoModel", mongoModel, vs)
+	t := NewTemplate("mongoModel", mongoModel, r)
 	err = file.Write(t)
 	return
 }
 
-func parseMongoFuncs(name string, model *M) (r map[string]interface{}, err error) {
+func genFuncs(baseDir, name string, structName string, model *M) (err error) {
+	for _, mf := range model.MFs {
+		file := NewFile(path.Join(baseDir, modelDir, name, toLowerAndUnderscore(mf.Name)+".go"))
+		var t *Template
+		if mf.Type == "list" {
+			r, err := parseMongoListFunc(name, structName, mf)
+			if err != nil {
+				return err
+			}
+			t = NewTemplate(mf.Name, mongoListFunc, r)
+		}
+
+		err = file.Write(t)
+	}
+
+	return
+}
+
+func parseMongoListFunc(name string, structName string, mf *MF) (r map[string]interface{}, err error) {
+	r = make(map[string]interface{})
+	r["package"] = name
+	r["funcName"] = mf.Name
+	r["StructName"] = structName
+
+	req := NewStruct(mf.Input)
+	r["reqName"] = req.Name
+
+	builder := strings.Builder{}
+	for _, f := range req.Fields {
+		if f.Name == "Page" {
+			r["hasPage"] = true
+		}
+
+		// 忽略分页参数
+		if f.Name == "Page" || f.Name == "Size" || f.Name == "All" {
+			continue
+		}
+
+		zero := getZero(f.Type)
+
+		fmt.Fprintf(&builder, "\tif req.%s != %s {\n", f.Name, zero)
+		fmt.Fprintf(&builder, "\t\tfilter[\"%s\"] = req.%s\n", f.GetTagWithoutOmit(), f.Name)
+		fmt.Fprintf(&builder, "\t}\n")
+	}
+
+	r["filter"] = builder.String()
+
+	return
+}
+
+func getZero(t string) string {
+	switch t {
+	case "string":
+		return `""`
+	case "int64":
+		return "0"
+	default:
+		return "unknown"
+	}
+}
+
+func parseMongoModel(name string, model *M) (r map[string]interface{}, err error) {
 	r = make(map[string]interface{})
 	r["package"] = name
 	base := NewStruct(model.Structs[0])
@@ -123,7 +189,12 @@ func (b *Builder) AddMongoStruct(st *Struct, isBase bool) {
 		if f.ApiOnly {
 			continue
 		}
-		fmt.Fprintf(b, "\t%s\n", f.ToMongo())
+
+		if isBase {
+			fmt.Fprintf(b, "\t%s\n", f.ToMongo())
+		} else {
+			fmt.Fprintf(b, "\t%s\n", f.ToJsonWithoutOmit())
+		}
 	}
 	fmt.Fprint(b, "}\n")
 }
