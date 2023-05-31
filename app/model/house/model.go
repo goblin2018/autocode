@@ -17,7 +17,7 @@ type Model struct {
 	primaryKey string
 	secondKey  string
 	coll       *mongo.Collection
-	*mgo.MongoModel
+	d          *mgo.MongoModel
 }
 
 func NewModel(md *mgo.MongoModel) *Model {
@@ -26,23 +26,23 @@ func NewModel(md *mgo.MongoModel) *Model {
 
 	m := &Model{
 		name:       name,
-		MongoModel: md,
+		d:          md,
 		coll:       md.InitCollection(name),
 		primaryKey: fmt.Sprintf("cache:%s:id:", name),
 		secondKey:  fmt.Sprintf("cache:%s:orgId:phone:", name),
 	}
 	// 创建唯一索引
-	m.AddUniKey(m.coll, "orgId", "phone")
+	m.d.AddUniKey(m.coll, "orgId", "phone")
 
 	return m
 }
 
 // 加载key
 func (m *Model) loadKeys(data *House) (err error) {
-	if err = m.Set(m.GetKey(m.primaryKey, data.Id), data); err != nil {
+	if err = m.d.Set(m.d.GetKey(m.primaryKey, data.Id), data); err != nil {
 		return
 	}
-	if err = m.Set(m.GetKey(m.secondKey, data.OrgId, data.Phone), data.Id); err != nil {
+	if err = m.d.Set(m.d.GetKey(m.secondKey, data.OrgId, data.Phone), data.Id); err != nil {
 		return
 	}
 	return
@@ -50,10 +50,10 @@ func (m *Model) loadKeys(data *House) (err error) {
 
 // 清空Key
 func (m *Model) clearKeys(data *House) (err error) {
-	if err = m.Del(m.GetKey(m.primaryKey, data.Id)); err != nil {
+	if err = m.d.Del(m.d.GetKey(m.primaryKey, data.Id)); err != nil {
 		return
 	}
-	if err = m.Del(m.GetKey(m.secondKey, data.OrgId, data.Phone)); err != nil {
+	if err = m.d.Del(m.d.GetKey(m.secondKey, data.OrgId, data.Phone)); err != nil {
 		return
 	}
 	return
@@ -62,9 +62,9 @@ func (m *Model) clearKeys(data *House) (err error) {
 // 获取
 func (m *Model) FindOne(id string) (data *House, err error) {
 	data = &House{}
-	key := m.GetKey(m.primaryKey, id)
+	key := m.d.GetKey(m.primaryKey, id)
 
-	err = m.Take(
+	err = m.d.Take(
 		key,
 		data,
 		// 查询
@@ -90,15 +90,15 @@ func (m *Model) FindOne(id string) (data *House, err error) {
 func (m *Model) FindByOrgIdAndPhone(orgId string, phone string) (data *House, err error) {
 	data = &House{}
 
-	key := m.GetKey(m.secondKey, orgId, phone)
+	key := m.d.GetKey(m.secondKey, orgId, phone)
 
-	err = m.Take(
+	err = m.d.Take(
 		key,
 		data,
 		// 查询
 		func(d interface{}) (err error) {
 			var id string
-			if err = m.Get(key, &id); err != nil {
+			if err = m.d.Get(key, &id); err != nil {
 				d, err = m.FindOne(id)
 				return
 			}
