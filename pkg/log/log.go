@@ -8,14 +8,20 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var L *zap.SugaredLogger
+type Logger struct {
+	*zap.SugaredLogger
+}
+
+var L *Logger
 
 func Init(mode string, level string) {
 	writeSyner := getWriter(mode)
 	encoder := getEncoder(mode)
 	core := zapcore.NewCore(encoder, writeSyner, getLogLevel(level))
 	logger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1))
-	L = logger.Sugar()
+	L = &Logger{
+		logger.Sugar(),
+	}
 }
 
 func getLogLevel(level string) zapcore.LevelEnabler {

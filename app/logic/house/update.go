@@ -10,25 +10,25 @@ import (
 	"github.com/jinzhu/copier"
 )
 
-type AddLogic struct {
+type UpdateLogic struct {
 	*log.Logger
 	ctx *ctx.Context
 	*svc.ServiceContext
 }
 
-func NewAddLogic(ctx *ctx.Context, svcCtx *svc.ServiceContext) *AddLogic {
-	return &AddLogic{
+func NewUpdateLogic(ctx *ctx.Context, svcCtx *svc.ServiceContext) *UpdateLogic {
+	return &UpdateLogic{
 		Logger:         log.L,
 		ctx:            ctx,
 		ServiceContext: svcCtx,
 	}
 }
 
-func (l *AddLogic) Add(req *api.House) (err error) {
+func (l *UpdateLogic) Update(req *api.House) (err error) {
 
 	md := new(house.House)
 	copier.Copy(md, req)
-	err = l.HouseModel.Create(md)
+	err = l.HouseModel.Update(md)
 
 	return
 }

@@ -18,5 +18,6 @@ func main() {
 	for _, schema := range schemas {
 		g.GenTypes(baseDir, schema.Name, schema.Structs)
 		g.GenModels(baseDir, schema.Name, schema.Model)
+		g.GenLogics(baseDir, schema.Name, schema)
 	}
 }

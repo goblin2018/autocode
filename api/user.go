@@ -16,15 +16,13 @@ type TestB struct {
 	Age   int64  `json:"age"`
 }
 
-var get = g.Api("get", User{}, g.Empty)
-var update = g.Api("Update", User{}, g.Empty)
-
 var userSchema = g.Schema(
 	"user",
 	g.Ss(User{}, TestB{}),
 	g.Groups(
 		g.Group("user",
-			g.Apis(get, update),
+			g.Api("update", User{}, g.Empty),
+			g.Api("add", User{}, g.Empty),
 		),
 	),
 

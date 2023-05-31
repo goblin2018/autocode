@@ -17,11 +17,11 @@ var mongoModel string
 //go:embed tpl/mongo/list.tpl
 var mongoListFunc string
 
-func GenMongo(baseDir string, name string, model *M) (err error) {
-	genBase(baseDir, name, model)
-	r, _ := genModel(baseDir, name, model)
-	genFuncs(baseDir, name, r["StructName"].(string), model)
-	err = updateServiceContext(baseDir, name)
+func GenMongo(baseDir string, pkgName string, model *M) (err error) {
+	genBase(baseDir, pkgName, model)
+	r, _ := genModel(baseDir, pkgName, model)
+	genFuncs(baseDir, pkgName, r["StructName"].(string), model)
+	err = updateServiceContext(baseDir, pkgName)
 	if err != nil {
 		log.Errorf("update service context failed: %v", err)
 	}

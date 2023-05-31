@@ -1,4 +1,4 @@
-package house
+package user
 
 import (
 	"auto/api"
@@ -6,7 +6,7 @@ import (
 	"auto/pkg/ctx"
 	"auto/pkg/log"
 
-	"auto/app/model/house"
+	"auto/app/model/user"
 	"github.com/jinzhu/copier"
 )
 
@@ -24,11 +24,11 @@ func NewAddLogic(ctx *ctx.Context, svcCtx *svc.ServiceContext) *AddLogic {
 	}
 }
 
-func (l *AddLogic) Add(req *api.House) (err error) {
+func (l *AddLogic) Add(req *api.User) (err error) {
 
-	md := new(house.House)
+	md := new(user.User)
 	copier.Copy(md, req)
-	err = l.HouseModel.Create(md)
+	err = l.UserModel.Create(md)
 
 	return
 }

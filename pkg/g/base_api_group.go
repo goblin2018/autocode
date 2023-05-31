@@ -6,7 +6,7 @@ type G struct {
 	Apis []*A
 }
 
-func Group(name string, apis []*A) *G {
+func Group(name string, apis ...*A) *G {
 	return &G{
 		Name: name,
 		Apis: apis,
