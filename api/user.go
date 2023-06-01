@@ -21,8 +21,8 @@ var userSchema = g.Schema(
 	g.Ss(User{}, TestB{}),
 	g.Groups(
 		g.Group("user",
-			g.Api("update", User{}, g.Empty),
-			g.Api("add", User{}, g.Empty),
+			g.Api("update", "", User{}, g.Empty),
+			g.Api("add", "", User{}, g.Empty),
 		),
 	),
 

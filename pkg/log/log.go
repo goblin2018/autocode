@@ -96,3 +96,11 @@ func Error(args ...interface{}) {
 func Errorf(template string, args ...interface{}) {
 	L.Errorf(template, args...)
 }
+
+func Fatal(args ...interface{}) {
+	L.Fatal(args...)
+}
+
+func Fatalf(template string, args ...interface{}) {
+	L.Fatalf(template, args...)
+}

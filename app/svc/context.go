@@ -5,6 +5,7 @@ import (
 	"auto/app/model/user"
 	"auto/pkg/conf"
 
+	"auto/pkg/log"
 	"auto/pkg/mgo"
 )
 
@@ -18,6 +19,7 @@ type ServiceContext struct {
 func NewServiceContext(c conf.Config) *ServiceContext {
 	mongoModel, err := mgo.NewMongoModel(c.Mongo, c.Redis)
 	if err != nil {
+		log.Errorf("NewMongoModel err: %v", err)
 		panic(err)
 	}
 

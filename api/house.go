@@ -35,10 +35,10 @@ var houseSchema = g.Schema(
 	g.Ss(House{}, ListHouseReq{}, ListHouseResp{}, DelHouseReq{}),
 	g.Groups(
 		g.Group("house",
-			g.Api("add", House{}, g.Empty),
-			g.Api("update", House{}, g.Empty),
-			g.Api("del", DelHouseReq{}, g.Empty),
-			g.Api("list", ListHouseReq{}, ListHouseResp{}),
+			g.Api("add", "", House{}, g.Empty),
+			g.Api("update", "", House{}, g.Empty),
+			g.Api("del", "", DelHouseReq{}, g.Empty),
+			g.Api("list", "list", ListHouseReq{}, ListHouseResp{}),
 		),
 	),
 

@@ -2,6 +2,7 @@ package main
 
 import (
 	"auto/app/handler"
+	"auto/app/svc"
 	"auto/pkg/log"
 	"auto/pkg/server"
 
@@ -11,7 +12,11 @@ import (
 func main() {
 	c := config.New()
 	log.Init(c.Mode, c.LogLevel)
-	r := handler.New()
+	log.Info("init logger")
+	svc := svc.NewServiceContext(c)
+	log.Info("init service context")
+
+	r := handler.New(svc)
 	srv := server.New(c.Port, r)
 	srv.Start()
 	defer srv.Stop()

@@ -7,13 +7,13 @@ import (
 	"auto/pkg/e"
 )
 
-func add(c *ctx.Context) {
-	req := new(api.House)
+func del(c *ctx.Context) {
+	req := new(api.DelHouseReq)
 	if err := c.ShouldBind(req); err != nil {
 		c.Fail(e.InvalidParams.Add(err.Error()))
 		return
 	}
-	l := house.NewAddLogic(c, sv)
-	err := l.Add(req)
+	l := house.NewDelLogic(c, sv)
+	err := l.Del(req)
 	c.JSON(nil, err)
 }

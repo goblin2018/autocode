@@ -2,9 +2,9 @@ package server
 
 import (
 	"auto/pkg/ctx"
+	"auto/pkg/log"
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -28,6 +28,7 @@ func New(port int, router *ctx.Engine) Server {
 }
 
 func (s Server) Start() {
+	log.Info("Starting Server ...")
 	go func() {
 		// service connections
 		if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
@@ -45,12 +46,12 @@ func (s Server) Start() {
 }
 
 func (s Server) Stop() {
-	log.Println("Shutdown Server ...")
+	log.Info("Shutdown Server ...")
 	ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*100)
 	defer cancel()
 	if err := s.Shutdown(ctx); err != nil {
 		log.Fatal("Server Shutdown:", err)
 	}
 	<-ctx.Done()
-	log.Println("Server exiting")
+	log.Info("Server exiting")
 }

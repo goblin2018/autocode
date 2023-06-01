@@ -26,6 +26,7 @@ type Cache struct {
 }
 
 func NewCache(c conf.CacheConfig) *Cache {
+
 	return &Cache{
 		barrier: syncx.NewSingleFlight(),
 		redis:   NewRedis(c),

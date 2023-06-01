@@ -20,9 +20,9 @@ const serviceContextFile = "svc/context.go"
 
 func updateServiceContext(baseDir string, pkgName string) error {
 	// 解析 service.go 文件
-	fset := token.NewFileSet()
 	path := path.Join(baseDir, serviceContextFile)
 
+	fset := token.NewFileSet()
 	node, err := parser.ParseFile(fset, path, nil, parser.ParseComments)
 	if err != nil {
 		return err
