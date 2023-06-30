@@ -28,7 +28,7 @@ func GenLogics(baseDir string, pkgName string, sc Sc) error {
 }
 
 func genLogic(baseDir string, pkgName string, group *G, api *A, baseStruct *Struct) error {
-	file := NewFile(path.Join(baseDir, logicDir, group.Name, api.Name+".go"))
+	file := NewFile(path.Join(baseDir, logicDir, pkgName, api.Name+".go"))
 	logic := FirstCharToUpper(api.Name) + "Logic"
 	function := FirstCharToUpper(api.Name)
 

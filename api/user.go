@@ -21,13 +21,13 @@ var userSchema = g.Schema(
 	g.Ss(User{}, TestB{}),
 	g.Groups(
 		&g.G{
-			Name: "user",
 			Apis: g.Apis(
 				&g.A{
 					Name:   "add",
 					Path:   "",
-					Input:  nil,
-					Output: nil,
+					Method: g.POST,
+					Input:  User{},
+					Output: g.Empty,
 				},
 				g.Api("add", "", g.POST, User{}, g.Empty),
 			),

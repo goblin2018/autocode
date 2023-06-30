@@ -52,15 +52,19 @@ var systemUserSchema = g.Schema(
 	"sys_user",
 	g.Ss(SystemUser{}),
 	g.Groups(
-		g.Group("sys_user",
-			g.Api("update", "", g.PUT, SystemUser{}, g.Empty),
-			g.Api("add", "", g.POST, SystemUser{}, g.Empty),
-		),
+		&g.G{
+			Apis: g.Apis(
+				g.Api("update", "", g.PUT, SystemUser{}, g.Empty),
+				g.Api("add", "", g.POST, SystemUser{}, g.Empty),
+			),
+		},
 
-		g.Group("sys_user",
-			g.Api("login", "login", g.POST, LoginReq{}, SystemUser{}),
-			g.Api("sms", "sms", g.POST, SendSmsReq{}, g.Empty),
-		),
+		&g.G{
+			Apis: g.Apis(
+				g.Api("login", "login", g.POST, LoginReq{}, SystemUser{}),
+				g.Api("sms", "sms", g.POST, SendSmsReq{}, g.Empty),
+			),
+		},
 	),
 
 	g.Model(

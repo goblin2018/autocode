@@ -11,6 +11,7 @@ const (
 type A struct {
 	Name   string
 	Path   string
+	Method string
 	Input  interface{}
 	Output interface{}
 }
@@ -29,6 +30,7 @@ func Api(name string, path string, method string, input interface{}, output inte
 	return &A{
 		Name:   name,
 		Path:   path,
+		Method: method,
 		Input:  input,
 		Output: output,
 	}

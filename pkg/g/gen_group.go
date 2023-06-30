@@ -3,44 +3,57 @@ package g
 import (
 	_ "embed"
 	"fmt"
+	"log"
 	"path"
 )
 
 //go:embed tpl/handler/g.tpl
 var groupT string
 
-func genGroup(baseDir string, pkgName string, group *G) {
-	file := NewFile(path.Join(baseDir, handlerDir, group.Name, "a.go"))
+const groupTemplate = `
+	
+t{{.index}} := en.Group("{{.group}}")
+	{
+    {{.apis}}
+	}
+`
 
-	t := NewTemplate(group.Name, groupT, map[string]interface{}{
-		"group": group.Name,
-		"apis":  genApiRouterInfos(group),
+func genGroup(baseDir string, pkgName string, groups []*G) {
+	file := NewFile(path.Join(baseDir, handlerDir, pkgName, "a.go"))
+
+	info := ""
+	for index, group := range groups {
+		tg := NewTemplate(pkgName, groupTemplate, map[string]interface{}{
+			"index": index + 1,
+			"group": pkgName,
+			"apis":  genApiRouterInfos(group, index+1),
+		})
+
+		str, err := tg.ToFormattedString()
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		info = fmt.Sprintf("%s\n%s", info, str)
+
+	}
+
+	t := NewTemplate(pkgName, groupT, map[string]interface{}{
+		"pkgName": pkgName,
+		"info":    info,
 	})
-
 	file.Write(t)
 
 }
 
-func genApiRouterInfos(group *G) string {
+func genApiRouterInfos(group *G, index int) string {
 	info := ""
 	for _, api := range group.Apis {
-		info = fmt.Sprintf("%s\n\t\t%s", info, genApiRouterInfoItem(api))
+		info = fmt.Sprintf("%s\n\t\t%s", info, genApiRouterInfoItem(api, index))
 	}
 	return info
 }
 
-func genApiRouterInfoItem(api *A) string {
-	methodName := "GET"
-	switch api.Name {
-	case "add":
-		methodName = "POST"
-	case "list":
-		methodName = "GET"
-	case "update":
-		methodName = "PUT"
-	case "del":
-		methodName = "DELETE"
-	}
-
-	return fmt.Sprintf("t.%s(\"%s\",%s)", methodName, api.Path, api.Name)
+func genApiRouterInfoItem(api *A, index int) string {
+	return fmt.Sprintf("t%d.%s(\"%s\",%s)", index, api.Method, api.Path, api.Name)
 }

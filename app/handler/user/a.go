@@ -9,10 +9,12 @@ var sv *svc.ServiceContext
 
 func RegisterTo(en *ctx.RouterGroup, svc *svc.ServiceContext) {
 	sv = svc
-	t := en.Group("user")
+
+	t1 := en.Group("user")
 	{
 
-		t.PUT("PUT", update)
-		t.POST("", add)
+		t1.POST("", add)
+		t1.POST("", add)
 	}
+
 }

@@ -1,12 +1,10 @@
 package g
 
 import (
-	"bytes"
 	"fmt"
 	"go/format"
 	"os"
 	"path/filepath"
-	"text/template"
 )
 
 func MakeDir(dir string) error {
@@ -62,13 +60,10 @@ func (f *File) WriteString(content string) (err error) {
 
 // 默认使用 template 写
 func (f *File) Write(t *Template) (err error) {
-	te := template.Must(template.New(t.Name).Parse(t.Info))
-	buffer := new(bytes.Buffer)
-	err = te.Execute(buffer, t.Data)
+	r, err := t.ToFormattedString()
 	if err != nil {
 		return
 	}
-	r := Format(buffer.String())
 	err = f.WriteString(r)
 	return
 }

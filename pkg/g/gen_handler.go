@@ -9,13 +9,13 @@ import (
 //go:embed tpl/handler/handler.tpl
 var handlerT string
 
-func GenHandlers(baseDir string, pkgName string, sc Sc) error {
+func GenHandlers(baseDir string, sc Sc) error {
 	baseStruct := NewStruct(sc.Structs[0])
+	genGroup(baseDir, sc.Name, sc.Groups)
 	for _, group := range sc.Groups {
-		genGroup(baseDir, pkgName, group)
-		updateRouter(baseDir, group.Name)
+		updateRouter(baseDir, sc.Name)
 		for _, api := range group.Apis {
-			err := genHandler(baseDir, pkgName, group, api, baseStruct)
+			err := genHandler(baseDir, sc.Name, group, api, baseStruct)
 			if err != nil {
 				log.Error(err)
 				return err
@@ -26,7 +26,7 @@ func GenHandlers(baseDir string, pkgName string, sc Sc) error {
 }
 
 func genHandler(baseDir string, pkgName string, group *G, api *A, baseStruct *Struct) error {
-	file := NewFile(path.Join(baseDir, handlerDir, group.Name, api.Name+".go"))
+	file := NewFile(path.Join(baseDir, handlerDir, pkgName, api.Name+".go"))
 	logicFuncName := FirstCharToUpper(api.Name)
 
 	req := NewStruct(api.Input)
@@ -34,7 +34,7 @@ func genHandler(baseDir string, pkgName string, group *G, api *A, baseStruct *St
 
 	t := NewTemplate(api.Name, handlerT, map[string]interface{}{
 		"package":       pkgName,
-		"group":         group.Name,
+		"group":         pkgName,
 		"reqName":       req.Name,
 		"hasResp":       len(resp.Fields) > 0,
 		"logicFuncName": logicFuncName,
