@@ -1,0 +1,23 @@
+name: sys_user
+structs:
+  - SystemUser
+groups:
+  - name: user
+    middleware:
+      - JWT
+    apis:
+      - name: update
+        desc: 更新用户
+        method: PUT
+        path: /
+        input: SystemUser
+        output: Empty
+      - name: delete
+        desc: 删除用户
+        method: DELETE
+        path: /
+        input: Empty
+        output: Empty
+model:
+  db: mongo
+  funcs: ok

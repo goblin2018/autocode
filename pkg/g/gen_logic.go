@@ -60,24 +60,24 @@ func genLogic(baseDir string, pkgName string, group *G, api *A, baseStruct *Stru
 const addTemplate = `
 md := new({{.package}}.{{.name}})
 copier.Copy(md, req)
-err = l.{{.name}}Model.Create(md)
+err = l.{{.modelName}}.Create(md)
 `
 
 const updateTemplate = `
 md := new({{.package}}.{{.name}})
 copier.Copy(md, req)
-err = l.{{.name}}Model.Update(md)
+err = l.{{.modelName}}.Update(md)
 `
 
 const delTemplate = `
-err = l.{{.name}}Model.Delete(req.Id)
+err = l.{{.modelName}}.Delete(req.Id)
 `
 
 const listTemplate = `
 resp = new(api.{{.respName}})
 	opt := new({{.package}}.{{.reqName}})
 	copier.Copy(opt, req)
-	items, _ := l.{{.name}}Model.List(l.ctx, opt)
+	items, _ := l.{{.modelName}}.List(l.ctx, opt)
 	for _, it := range items {
 		td := new(api.{{.name}})
 		copier.Copy(td, it)
@@ -86,7 +86,7 @@ resp = new(api.{{.respName}})
 
 	{{if .usePage}}
 	if opt.Size != 0 {
-		resp.Total, _ = l.{{.name}}Model.Count(l.ctx, opt)
+		resp.Total, _ = l.{{.modelName}}.Count(l.ctx, opt)
 	}
 	{{end}}
 `
@@ -96,10 +96,11 @@ func genBody(api *A, pkgName string, baseStruct *Struct) string {
 
 	req := NewStruct(api.Input)
 	resp := NewStruct(api.Output)
-
+	modelName := fmt.Sprintf("%sModel", toUpperCamel(pkgName))
 	opt := map[string]interface{}{
-		"package": pkgName,
-		"name":    baseStruct.Name,
+		"package":   pkgName,
+		"name":      baseStruct.Name,
+		"modelName": modelName,
 	}
 
 	// 增加增删改查的基础逻辑

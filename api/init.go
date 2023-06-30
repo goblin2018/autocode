@@ -13,5 +13,6 @@ func init() {
 	Add(
 		userSchema,
 		houseSchema,
+		systemUserSchema,
 	)
 }

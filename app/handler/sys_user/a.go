@@ -1,4 +1,4 @@
-package user
+package sys_user
 
 import (
 	"auto/app/svc"
@@ -9,10 +9,10 @@ var sv *svc.ServiceContext
 
 func RegisterTo(en *ctx.RouterGroup, svc *svc.ServiceContext) {
 	sv = svc
-	t := en.Group("user")
+	t := en.Group("sys_user")
 	{
-
-		t.PUT("PUT", update)
-		t.POST("", add)
+		t.GET("login", login)
+		t.GET("sms", sms)
 	}
+
 }

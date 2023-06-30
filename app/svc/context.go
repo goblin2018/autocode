@@ -2,6 +2,7 @@ package svc
 
 import (
 	"auto/app/model/house"
+	"auto/app/model/sys_user"
 	"auto/app/model/user"
 	"auto/pkg/conf"
 
@@ -10,10 +11,11 @@ import (
 )
 
 type ServiceContext struct {
-	Config     conf.Config
-	Mongo      *mgo.MongoModel
-	UserModel  *user.Model
-	HouseModel *house.Model
+	Config       conf.Config
+	Mongo        *mgo.MongoModel
+	UserModel    *user.Model
+	HouseModel   *house.Model
+	SysUserModel *sys_user.Model
 }
 
 func NewServiceContext(c conf.Config) *ServiceContext {
@@ -24,8 +26,9 @@ func NewServiceContext(c conf.Config) *ServiceContext {
 	}
 
 	return &ServiceContext{
-		Config:     c,
-		UserModel:  user.NewModel(mongoModel),
-		HouseModel: house.NewModel(mongoModel),
+		Config:       c,
+		UserModel:    user.NewModel(mongoModel),
+		HouseModel:   house.NewModel(mongoModel),
+		SysUserModel: sys_user.NewModel(mongoModel),
 	}
 }

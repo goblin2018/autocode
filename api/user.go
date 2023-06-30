@@ -20,16 +20,23 @@ var userSchema = g.Schema(
 	"user",
 	g.Ss(User{}, TestB{}),
 	g.Groups(
-		g.Group("user",
-			g.Api("update", "", User{}, g.Empty),
-			g.Api("add", "", User{}, g.Empty),
-		),
+		&g.G{
+			Name: "user",
+			Apis: g.Apis(
+				&g.A{
+					Name:   "add",
+					Path:   "",
+					Input:  nil,
+					Output: nil,
+				},
+				g.Api("add", "", g.POST, User{}, g.Empty),
+			),
+		},
 	),
 
 	g.Model(
 		"mongo",
 		g.Ss(User{}),
-
 		g.ModelFuncs(),
 	),
 )

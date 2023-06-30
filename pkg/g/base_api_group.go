@@ -6,6 +6,7 @@ type G struct {
 	Apis []*A
 }
 
+// name api group 名称
 func Group(name string, apis ...*A) *G {
 	return &G{
 		Name: name,
