@@ -11,9 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-const Token = "g-token"
-
-func JWT(sv *svc.ServiceContext) ctx.HandlerFunc {
+func Auth(sv *svc.ServiceContext) ctx.HandlerFunc {
 	conf := sv.Config
 	return func(c *ctx.Context) {
 
@@ -48,9 +46,4 @@ func JWT(sv *svc.ServiceContext) ctx.HandlerFunc {
 		c.Next()
 
 	}
-}
-
-func LoadToken(c *ctx.Context, claims *jwt.Claims, expiration time.Duration) {
-	claims.ExpiresAt = time.Now().Add(expiration).Unix()
-	c.Header(Token, jwt.GenToken(*claims))
 }

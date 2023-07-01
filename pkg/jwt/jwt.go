@@ -10,15 +10,15 @@ const issuer = "goblin-is-best"
 const key = "a-nice-future"
 
 type Claims struct {
-	Id        uint   `json:"idd,omitempty"`
+	Id        string `json:"idd,omitempty"`
 	Phone     string `json:"pho,omitempty"`
-	Level     int    `json:"lev,omitempty"`
+	Role      string `json:"rol,omitempty"`
 	ExpiresAt int64  `json:"exp,omitempty"`
 	Issuer    string `json:"iss,omitempty"`
 }
 
 func (c Claims) Valid() error {
-	if c.Id == 0 || c.Issuer != issuer {
+	if c.Id == "" || c.Issuer != issuer {
 		return e.TokenError
 	}
 	return nil

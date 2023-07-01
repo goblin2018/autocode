@@ -1,6 +1,9 @@
 package config
 
-import "auto/pkg/conf"
+import (
+	"auto/pkg/conf"
+	"time"
+)
 
 func New() conf.Config {
 	return conf.Config{
@@ -17,6 +20,10 @@ func New() conf.Config {
 			Url: "localhost:6379",
 			// Todo 暂时不用密码
 			Password: "",
+		},
+
+		Token: conf.TokenConfig{
+			Expiration: 2 * time.Hour,
 		},
 	}
 }
