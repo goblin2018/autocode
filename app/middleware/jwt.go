@@ -17,6 +17,8 @@ func JWT(sv *svc.ServiceContext) ctx.HandlerFunc {
 	conf := sv.Config
 	return func(c *ctx.Context) {
 
+		//
+
 		token := c.Request.Header.Get(Token)
 		if token == "" {
 			c.Abort(e.TokenError.Add("token is empty"))
