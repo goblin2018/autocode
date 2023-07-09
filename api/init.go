@@ -12,7 +12,5 @@ func Add(s ...g.Sc) {
 func init() {
 	Add(
 		userSchema,
-		houseSchema,
-		systemUserSchema,
 	)
 }

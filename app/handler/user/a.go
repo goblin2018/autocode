@@ -14,7 +14,7 @@ func RegisterTo(en *ctx.RouterGroup, svc *svc.ServiceContext) {
 	{
 
 		t1.POST("", add)
-		t1.POST("", add)
+		t1.POST("", login)
 	}
 
 }
